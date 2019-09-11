@@ -1,9 +1,6 @@
 {
   "author": "James Grow",
   "description": "Tool written in JS to pull logs from PiHole and put into ElasticSearch",
-  "directories": {
-    "example": "example"
-  },
   "keywords": [
     "pihole",
     "raspberrypi",
@@ -13,6 +10,7 @@
   "name": "pihole_logs",
   "license": "Apache",
   "scripts": {
+    "start": "node src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/acidDrain/pihole-logs.git",
