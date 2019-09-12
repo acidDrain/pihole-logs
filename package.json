@@ -16,6 +16,7 @@
   "repository": "https://github.com/acidDrain/pihole-logs.git",
   "version": "0.1.0",
   "dependencies": {
+    "dotenv": "^8.1.0",
     "node-fetch": "^2.6.0"
   }
 }
