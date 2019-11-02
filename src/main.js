@@ -21,18 +21,25 @@ const formatRecord = record => (
 
 try {  
   const { PIHOLE_ADDRESS, API_TOKEN, START_TIME, END_TIME } = process.env;
-  const NOW = Date.now();
-  const TS = new Date();
+  /*
+   * const NOW = Date.now();
+   */
+  /*
+   * const TS = new Date(NOW);
+   */
   const VERIFY_SSL = false;
-  const INDEX_TIMESTAMP = `${TS.getFullYear()}-${TS.getMonth() + 1}-${TS.getDate()};`
+  /*
+   * const INDEX_TIMESTAMP = `${TS.getFullYear()}-${TS.getMonth() + 1}-${TS.getDate()};`
+   */
   const PIHOLE_URL = `https://${PIHOLE_ADDRESS}/admin/api_db.php?auth=${API_TOKEN}&getAllQueries&from=${START_TIME}.000&until=${END_TIME}.000&types=1,2,3,4,5,6,7,8`;
 
-  console.log(`PIHOLE_URL: ${PIHOLE_URL}`);
-  fetch(PIHOLE_URL, { agent: new https.Agent({ rejectUnauthorized: VERIFY_SSL }) })
-    .then(res => res.json())
-    .then(({ data }) => data.map(d => console.log(formatRecord(d))))
-    .catch(err => console.log(`Error fetching logs: ${err}`));
-
+  console.error(`PIHOLE_URL: ${PIHOLE_URL}`);
+  (async () =>{   
+   const res = await fetch(PIHOLE_URL, { agent: new https.Agent({ rejectUnauthorized: VERIFY_SSL }) });
+    const { data } = await res.json();
+    const formattedData = data.map(formatRecord);
+    console.log(JSON.stringify(formattedData));
+  })();
 } catch (e) {
   console.error(`Error: No PIHOLE_ADDRESS and/or API_TOKEN were provided!\n${e}`);
   process.exit(1);

@@ -11,12 +11,18 @@
   "license": "Apache",
   "scripts": {
     "start": "node src/main.js",
+    "lint": "eslint ./src/*.js --ext .js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/acidDrain/pihole-logs.git",
   "version": "0.1.0",
   "dependencies": {
     "dotenv": "^8.1.0",
+    "ndjson": "^1.5.0",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "prettier": "1.18.2"
   }
 }
