@@ -29,3 +29,19 @@ pihole API url: `https://${PIHOLE_ADDRESS}/admin/api_db.php?auth=${TOKEN}&getAll
   ]
   }
 ```
+
+## Example ElasticSearch `_bulk` API `POST`
+
+```
+POST pihole-logs/_bulk
+{"create":{}}
+{"@timestamp":1576740025,"recordType":"A","query":"netflix.com","requestor":"deco-m4r.ued.lan","queryType":2}
+```
+
+or, as a curl:
+
+```shell
+$ curl -XPOST "http://elasticsearch:9200/pihole-logs/_bulk" \
+  -H 'Content-Type: application/json' \
+  -d'{"create":{}}{"@timestamp":1576740025,"recordType":"A","query":"netflix.com","requestor":"deco-m4r.ued.lan","queryType":2}' 
+```
