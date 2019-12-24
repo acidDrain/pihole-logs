@@ -15,9 +15,17 @@ Object.defineProperty(exports, "makeNdJson", {
     return _makeNdJson.default;
   }
 });
+Object.defineProperty(exports, "default", {
+  enumerable: true,
+  get: function () {
+    return _main.default;
+  }
+});
 
 var _formatRecord = _interopRequireDefault(require("./formatRecord"));
 
 var _makeNdJson = _interopRequireDefault(require("./makeNdJson"));
+
+var _main = _interopRequireDefault(require("./main"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

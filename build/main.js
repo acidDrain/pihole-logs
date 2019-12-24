@@ -1,6 +1,9 @@
 "use strict";
 
-var _dotenv = _interopRequireDefault(require("dotenv"));
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
 
 var _https = _interopRequireDefault(require("https"));
 
@@ -12,48 +15,49 @@ var _makeNdJson = _interopRequireDefault(require("./makeNdJson"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_dotenv.default.config();
+const submitToEs = async ({
+  elasticsearchURL,
+  ndjsonData,
+  verifySSL
+}) => (0, _nodeFetch.default)(elasticsearchURL, {
+  method: 'POST',
+  body: `${ndjsonData}\n`,
+  headers: {
+    'Content-Type': 'application/x-ndjson'
+  },
+  agent: new _https.default.Agent({
+    rejectUnauthorized: verifySSL
+  })
+});
 
-try {
-  const {
-    PIHOLE_ADDRESS,
-    API_TOKEN,
-    START_TIME,
-    END_TIME
-  } = process.env;
-  const NOW = Date.now();
-  const TS = new Date(NOW);
-  const VERIFY_SSL = false;
+const NOW = Date.now();
+const TS = new Date(NOW);
+
+var _default = async ({
+  piholeAddress,
+  elasticHost,
+  verifySSL = false,
+  apiToken,
+  startTime = NOW / 1000 - 60 * 15,
+  endTime = NOW
+}) => {
   const INDEX_TIMESTAMP = `${TS.getFullYear()}-${TS.getMonth() + 1}-${TS.getDate()};`;
-  const PIHOLE_URL = `https://${PIHOLE_ADDRESS}/admin/api_db.php?auth=${API_TOKEN}&getAllQueries&from=${START_TIME}.000&until=${END_TIME}.000&types=1,2,3,4,5,6,7,8`;
-  const elasticsearchURL = `https://elasticsearch.ued.lan/pihole-logs-${INDEX_TIMESTAMP}/_bulk`;
-  console.error(`PIHOLE_URL: ${PIHOLE_URL}`);
+  const piholeURL = `https://${piholeAddress}/admin/api_db.php?auth=${apiToken}&getAllQueries&from=${startTime}.000&until=${endTime}.000&types=1,2,3,4,5,6,7,8`;
+  const elasticsearchURL = `https://${elasticHost}/pihole-logs-${INDEX_TIMESTAMP}/_bulk`;
+  const res = await (0, _nodeFetch.default)(piholeURL, {
+    agent: new _https.default.Agent({
+      rejectUnauthorized: verifySSL
+    })
+  });
+  const {
+    data
+  } = await res.json();
+  const formattedData = (0, _makeNdJson.default)(data.map(_formatRecord.default));
+  return submitToEs({
+    ndjsonData: formattedData,
+    elasticsearchURL,
+    verifySSL: false
+  });
+};
 
-  (async () => {
-    const res = await (0, _nodeFetch.default)(PIHOLE_URL, {
-      agent: new _https.default.Agent({
-        rejectUnauthorized: VERIFY_SSL
-      })
-    });
-    const {
-      data
-    } = await res.json();
-    const formattedData = (0, _makeNdJson.default)(data.map(_formatRecord.default));
-    console.log(`Formatted Data: ${formattedData}`);
-    const esResponse = await (0, _nodeFetch.default)(elasticsearchURL, {
-      method: 'POST',
-      body: `${formattedData}\n`,
-      headers: {
-        'Content-Type': 'application/x-ndjson'
-      },
-      agent: new _https.default.Agent({
-        rejectUnauthorized: VERIFY_SSL
-      })
-    });
-    const esResponseJson = await esResponse.json();
-    console.log(`Elastic Response: ${JSON.stringify(esResponseJson)}`);
-  })();
-} catch (e) {
-  console.error(`Error: No PIHOLE_ADDRESS and/or API_TOKEN were provided!\n${e}`);
-  process.exit(1);
-}
+exports.default = _default;
