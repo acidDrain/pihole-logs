@@ -56,15 +56,18 @@ export default async ({
   const { data } = await res.json();
 
   if (DEBUG) console.log(`piholeResponse: ${data}`);
-
-  const formattedData = makeNdJson(data.map(formatRecord));
-  if (DEBUG) console.log(`formattedData: ${formattedData}`);
   if (DEBUG) console.log(`endTime: ${endTime}`);
   const TS = new Date(msToS(endTime));
   if (DEBUG) console.log(`TS: ${TS}`);
   const tsString = createIndexTimestamp(TS);
   if (DEBUG) console.log(tsString);
-  const elasticsearchURL = `https://${elasticHost}/pihole-logs-${tsString}/_bulk`;
+
+  const piholeIndex = `pihole-logs-${tsString}`;
+  if (DEBUG) console.log(piholeIndex);
+
+  const formattedData = makeNdJson(piholeIndex, data.map(formatRecord));
+  if (DEBUG) console.log(`formattedData: ${formattedData}`);
+  const elasticsearchURL = `https://${elasticHost}/_bulk`;
   if (DEBUG) console.log(`elasticsearchURL: ${elasticsearchURL}`);
   
   if (DEBUG) console.log('Submitting to ES');
