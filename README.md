@@ -35,7 +35,7 @@ const reqData = {
   startTime,
   piholeAddress,
   endTime,
-  apiToken: process.env.apiToken,
+  PIHOLE_API_TOKEN: process.env.PIHOLE_API_TOKEN,
   elasticHost,
   verifySSL,
 };
