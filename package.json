@@ -7,7 +7,7 @@
     "elasticsearch"
   ],
   "main": "index.js",
-  "name": "pihole_logs",
+  "name": "pihole-logs",
   "license": "Apache",
   "scripts": {
     "build": "rm -rf build/* && npm ci && npm run build:types && npm run build:js",
