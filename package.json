@@ -1,12 +1,12 @@
 {
-  "author": "James Grow",
+  "author": "acidDrain",
   "description": "Tool written in JS to pull logs from PiHole and put into ElasticSearch",
   "keywords": [
     "pihole",
     "raspberrypi",
     "elasticsearch"
   ],
-  "main": "fetch_pihole_logs.js",
+  "main": "index.js",
   "name": "pihole_logs",
   "license": "Apache",
   "scripts": {
@@ -23,7 +23,7 @@
     "type-check:watch": "npm run type-check -- --watch"
   },
   "repository": "https://github.com/acidDrain/pihole-logs.git",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "dependencies": {
     "dotenv": "^8.1.0",
     "node-fetch": "^2.6.0"
