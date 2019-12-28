@@ -1,6 +1,6 @@
 import { IRecord } from './types/record';
 
-export default (jsonArray: IRecord[]): string => (
-  jsonArray.map(jsonRecord => [JSON.stringify({create: {}}), JSON.stringify(jsonRecord)]).map(i => i.join('\n')).join('\n')
+export default (esIndex: string, jsonArray: IRecord[]): string => (
+  jsonArray.map(jsonRecord => [JSON.stringify({create: { "_index": esIndex } }), JSON.stringify(jsonRecord)]).map(i => i.join('\n')).join('\n')
 );
 
