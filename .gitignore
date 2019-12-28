@@ -2,4 +2,3 @@ example
 node_modules
 .env
 _esy
-build/*
