@@ -11,30 +11,11 @@ var _formatRecord = _interopRequireDefault(require("./formatRecord"));
 
 var _nodeFetch = _interopRequireDefault(require("node-fetch"));
 
-var _makeNdJson = _interopRequireDefault(require("./makeNdJson"));
-
 var _util = require("./util");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const submitToEs = async ({
-  elasticsearchURL,
-  ndjsonData,
-  verifySSL
-}) => (0, _nodeFetch.default)(elasticsearchURL, {
-  method: 'POST',
-  body: `${ndjsonData}\n`,
-  headers: {
-    'Content-Type': 'application/x-ndjson'
-  },
-  agent: new _https.default.Agent({
-    rejectUnauthorized: verifySSL
-  })
-});
-
 const NOW = (0, _util.sToMs)(Date.now());
-
-const createIndexTimestamp = dateObj => `${dateObj.getFullYear()}-${dateObj.getMonth() + 1}-${dateObj.getDate()}`;
 
 const constructQuery = ({
   piholeAddress,
@@ -45,7 +26,6 @@ const constructQuery = ({
 
 var _default = async ({
   piholeAddress,
-  elasticHost,
   verifySSL = false,
   PIHOLE_API_TOKEN,
   startTime = NOW - _util.fifteenMinutes,
@@ -65,16 +45,9 @@ var _default = async ({
   const {
     data
   } = await res.json();
-  const TS = new Date((0, _util.msToS)(endTime));
-  const tsString = createIndexTimestamp(TS);
-  const piholeIndex = `pihole-logs-${tsString}`;
-  const formattedData = (0, _makeNdJson.default)(piholeIndex, data.map(_formatRecord.default));
-  const elasticsearchURL = `https://${elasticHost}/_bulk`;
-  return submitToEs({
-    ndjsonData: formattedData,
-    elasticsearchURL,
-    verifySSL
-  });
+  return {
+    data: data.map(_formatRecord.default)
+  };
 };
 
 exports.default = _default;
